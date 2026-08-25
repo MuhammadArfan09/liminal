@@ -1,0 +1,8 @@
+# Defense in depth: even though uploaded files are validated by MIME type
+# and given random non-executable extensions, this blocks any script
+# execution inside the uploads directory on Apache.
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|cgi|sh|asp|aspx|exe)$">
+    Require all denied
+</FilesMatch>
+Options -ExecCGI
+AddHandler cgi-script .php .php3 .php4 .php5 .phtml .pl .py .cgi .sh

@@ -1,0 +1,23 @@
+/*
+  Liminal Studio uses the Tailwind CDN build (configured inline in
+  includes/header.php) so the project runs with zero build step.
+
+  If you later want to compile Tailwind locally (e.g. to purge unused
+  classes for production), install the Tailwind CLI and use this file
+  as your source stylesheet:
+
+    npx tailwindcss -i ./css/input.css -o ./css/output.css --watch
+
+  Then swap the CDN <script> tag in includes/header.php for a link to
+  css/output.css.
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-display {
+    font-family: 'Manrope', sans-serif;
+  }
+}
