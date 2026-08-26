@@ -16,7 +16,7 @@ The website allows customers to explore the studio, choose their preferred sched
 - 📋 Booking detail
 - 🔐 CSRF protection
 - 🛡️ Server-side validation
-- 🗄️ PostgreSQL database integration
+- 🗄️ MySQL database integration
 - 📱 Responsive design
 - ⚡ Interactive UI with Vanilla JavaScript
 - 🎨 Modern UI with Tailwind CSS

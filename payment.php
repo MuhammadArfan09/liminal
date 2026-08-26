@@ -145,10 +145,7 @@ try {
         $bookingId
     );
 } catch (Throwable $e) {
-    /*
-     * Do not crash payment.php if payment helper is unavailable.
-     * The error is logged for debugging.
-     */
+    
 
     error_log(
         'Get existing payment error: ' .

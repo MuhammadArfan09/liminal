@@ -1,15 +1,12 @@
 <?php
-/**
- * Shared helper functions.
- */
 
 declare(strict_types=1);
 
 const STUDIO_RATE_PER_HOUR = 75000;
-const STUDIO_OPEN_HOUR     = 10; // 10:00
-const STUDIO_CLOSE_HOUR    = 23; // 23:00
+const STUDIO_OPEN_HOUR     = 10; 
+const STUDIO_CLOSE_HOUR    = 23; 
 const UPLOAD_DIR           = __DIR__ . '/../uploads/proofs/';
-const UPLOAD_MAX_BYTES     = 5 * 1024 * 1024; // 5MB
+const UPLOAD_MAX_BYTES     = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES   = [
     'image/jpeg' => 'jpg',
     'image/png'  => 'png',
@@ -49,26 +46,26 @@ function verifyCsrfToken(?string $token): bool
         && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-/** Format an integer rupiah amount, e.g. 150000 -> "Rp150.000". */
+
 function formatRupiah(int $amount): string
 {
     return 'Rp' . number_format($amount, 0, ',', '.');
 }
 
-/** Format a Y-m-d date string as "25 August 2026". */
+
 function formatDateLong(string $date): string
 {
     $ts = strtotime($date);
     return $ts ? date('d F Y', $ts) : e($date);
 }
 
-/** Calculate total price for a given duration in hours. */
+
 function calculateTotal(int $hours): int
 {
     return max(0, $hours) * STUDIO_RATE_PER_HOUR;
 }
 
-/** Generate a unique, human-readable booking code: LMN-YYYYMMDD-XXX */
+
 function generateBookingCode(PDO $pdo, string $bookingDate): string
 {
     $prefix = 'LMN-' . date('Ymd', strtotime($bookingDate)) . '-';
@@ -82,12 +79,7 @@ function generateBookingCode(PDO $pdo, string $bookingDate): string
     return $prefix . str_pad((string) ($count + 1), 3, '0', STR_PAD_LEFT);
 }
 
-/**
- * Check whether a requested time range overlaps any existing active
- * booking for the same date. Returns true if the slot is available.
- *
- * Overlap rule: NOT (new_end <= existing_start OR new_start >= existing_end)
- */
+
 function isSlotAvailable(PDO $pdo, string $date, string $startTime, string $endTime, ?int $excludeBookingId = null): bool
 {
     $sql = "SELECT COUNT(*) FROM bookings
@@ -132,13 +124,25 @@ function isValidPhone(string $phone): bool
     return strlen($digits) >= 8 && strlen($digits) <= 15;
 }
 
-/** Safely handle a payment-proof upload. Returns the stored filename or null on failure. */
-function handleProofUpload(array $file): ?string
+/**
+ * Safely handle a payment-proof upload. Returns the stored filename on
+ * success, or null on failure.
+ *
+ * $reason (by reference) diisi alasan gagalnya dalam bahasa yang aman
+ * untuk di-log (bukan untuk ditampilkan mentah-mentah ke user), supaya
+ * kalau ada laporan "upload gagal padahal filenya benar", kita tinggal
+ * buka error log server dan langsung tahu titik gagalnya di mana —
+ * tanpa ini, semua kemungkinan gagal (ukuran, tipe file, folder tidak
+ * bisa ditulis, dst) kelihatan sama di mata user maupun di log.
+ */
+function handleProofUpload(array $file, ?string &$reason = null): ?string
 {
     if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
+        $reason = 'php_upload_error_' . ($file['error'] ?? 'unknown');
         return null;
     }
     if ($file['size'] > UPLOAD_MAX_BYTES) {
+        $reason = 'file_too_large (' . $file['size'] . ' bytes)';
         return null;
     }
 
@@ -147,6 +151,7 @@ function handleProofUpload(array $file): ?string
     finfo_close($finfo);
 
     if (!isset(ALLOWED_MIME_TYPES[$mime])) {
+        $reason = 'mime_not_allowed (detected: ' . $mime . ', original name: ' . ($file['name'] ?? '?') . ')';
         return null;
     }
 
@@ -154,11 +159,17 @@ function handleProofUpload(array $file): ?string
         mkdir(UPLOAD_DIR, 0755, true);
     }
 
+    if (!is_writable(UPLOAD_DIR)) {
+        $reason = 'upload_dir_not_writable (' . UPLOAD_DIR . ')';
+        return null;
+    }
+
     $extension = ALLOWED_MIME_TYPES[$mime];
     $filename  = bin2hex(random_bytes(16)) . '.' . $extension;
     $destination = UPLOAD_DIR . $filename;
 
     if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        $reason = 'move_uploaded_file_failed';
         return null;
     }
 
