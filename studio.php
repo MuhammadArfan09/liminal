@@ -37,8 +37,16 @@ require __DIR__ . '/includes/navbar.php';
       <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <?php
         $equipment = [
-          ['icon' => 'fa-drum', 'title' => 'Drum Kit', 'desc' => 'A full acoustic kit, tuned and ready for every session.'],
-          ['icon' => 'fa-guitar', 'title' => 'Guitar Amplifier', 'desc' => 'Reliable tube and solid-state amps for any tone.'],
+          [
+          'icon' => 'fa-drum',
+          'title' => 'Drum Kit',
+          'desc' => 'A full acoustic kit, tuned and ready for every session.'
+          ],
+          [
+          'icon' => 'fa-guitar', 
+          'title' => 'Guitar Amplifier',
+          'desc' => 'Reliable tube and solid-state amps for any tone.'
+          ],
           ['icon' => 'fa-volume-high', 'title' => 'Bass Amplifier', 'desc' => 'Deep, clean low-end that holds the room together.'],
           ['icon' => 'fa-microphone', 'title' => 'Microphone', 'desc' => 'Vocal and instrument mics for rehearsal and recording.'],
           ['icon' => 'fa-sliders', 'title' => 'Mixer', 'desc' => 'A dedicated console for balancing your full band mix.'],
