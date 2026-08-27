@@ -40,6 +40,11 @@ require __DIR__ . '/includes/header.php';
       <h1 class="mt-6 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Booking Confirmed</h1>
       <p class="mt-3 text-base text-zinc-400">Your session has been successfully booked.</p>
 
+
+      <a href="resi.php?id=<?= (int) $booking['id'] ?>" class="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-white hover:bg-white/[0.06] transition-colors">
+       <i class="fa-solid fa-download"></i> Download PDF
+      </a>
+
       <div class="mt-10 rounded-3xl border border-white/10 bg-white/[0.02] p-7 text-left md:p-9">
         <div class="flex items-center justify-between">
           <p class="text-xs font-semibold uppercase tracking-wider text-violet-300">Booking ID</p>

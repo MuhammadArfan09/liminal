@@ -39,7 +39,7 @@ $pageDescription = $pageDescription ?? 'Professional band rehearsal space built 
           glow: '0 0 60px -10px rgba(139, 92, 246, 0.35)',
           'glow-sm': '0 0 30px -8px rgba(139, 92, 246, 0.4)',
         },
-      },
+      }, 
     },
   };
 </script>
